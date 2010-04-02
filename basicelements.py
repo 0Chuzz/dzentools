@@ -5,6 +5,8 @@ import os
 import itertools
 import yaml
 import dbus
+import select
+import alsaaudio
 from dbus.exceptions import DBusException
 from dzentools import BarElement, ForegroundColour
 
@@ -60,12 +62,21 @@ class MprisPlayer(BarElement):
             (metadata.get('title', 'No title') + ' - ' 
             + metadata.get('artist', "No artist")))
 
+
 class Audio(BarElement):
+    def __init__(self, **kw):
+        super(Audio, self).__init__(**kw)
+        self._poll = select.poll()
+        self._poll.register(*alsaaudio.Mixer().polldescriptors()[0])
+
+    def check_update(self):
+        return self._poll.poll(0)
+    
     def update(self):
-        master = os.popen("amixer").read().split("Simple mixer control")[1]
-        master = [x.strip() for x in master.strip().split("\n")]
-        volume = master[-1].split()
-        return ORANGE("Vol: {3} {5}".format(*volume))
+        master = alsaaudio.Mixer()
+        state = "off" if master.getmute()[0] else "on"
+        vol = master.getvolume()[0]
+        return ORANGE("Vol: [{0}%] [{1}]".format(vol,state))
 
 
 if __name__ == "__main__":
