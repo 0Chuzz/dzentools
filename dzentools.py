@@ -77,12 +77,17 @@ class BarElement(object):
         if not ret:
             raise StopIteration
         self.last = ret
-        if self.size:
-            self.scroll_cursor %= self.size
+        if self.size is None:
+            pass
+        elif len(ret) < self.size:
             ret = ret.rjust(self.size)
+        elif len(ret) >= self.size:
+            ret += ' | '
+        if self.scroll:
+            self.scroll_cursor %= len(ret)
             ret = ret[self.scroll_cursor:] + ret[:self.scroll_cursor]
-            ret = ret[:self.size]
             self.scroll_cursor += self.scroll
+        ret = ret[:self.size]
         return ret
 
     def __iter__(self):
