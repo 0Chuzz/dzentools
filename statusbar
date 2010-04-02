@@ -1,0 +1,22 @@
+#!/usr/bin/python
+
+import os
+import time
+import sys
+import itertools
+import locale
+from basicelements import *
+
+DEFAULTARGS = "-ta r -y 782 -w 1080 -x 200 -bg black"
+ELEMENTS = (MprisPlayer(size=40, scroll=1), Audio(), Battery(), Load(), Time())
+
+def main():
+    locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
+    dzenproc = os.popen("dzen2 " + DEFAULTARGS + " ".join(sys.argv[1:]), "w")
+    for line in itertools.izip(*ELEMENTS):
+        dzenproc.write(" ".join(line) + "\n")
+        dzenproc.flush()
+        time.sleep(1)
+
+if __name__ == "__main__":
+    main()
