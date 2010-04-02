@@ -42,8 +42,7 @@ class Battery(BarElement):
 
 
 class MprisPlayer(BarElement):
-    def __init__(self, **kw):
-        super(MprisPlayer, self).__init__(**kw)
+    def start(self):
         self.application = "org.mpris.vlc"
         self.bus = dbus.SessionBus()
 
@@ -64,8 +63,7 @@ class MprisPlayer(BarElement):
 
 
 class Audio(BarElement):
-    def __init__(self, **kw):
-        super(Audio, self).__init__(**kw)
+    def start(self):
         self._poll = select.poll()
         self._poll.register(*alsaaudio.Mixer().polldescriptors()[0])
 

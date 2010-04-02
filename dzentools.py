@@ -55,6 +55,10 @@ class BarElement(object):
         self.scroll = scroll
         self.scroll_cursor = 0
         self.last = None
+        self.start()
+
+    def start(self):
+        pass
 
     def update(self):
         pass
@@ -78,7 +82,6 @@ class BarElement(object):
             ret = ret.rjust(self.size)
             ret = ret[self.scroll_cursor:] + ret[:self.scroll_cursor]
             ret = ret[:self.size]
-            #ret = ret.ljust(self.size)
             self.scroll_cursor += self.scroll
         return ret
 
