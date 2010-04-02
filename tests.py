@@ -3,6 +3,7 @@
 import itertools
 import unittest
 import copy
+import os, os.path
 from mock import Mock
 
 from dzentools import ForegroundColour, DzenString, BarElement
@@ -119,19 +120,38 @@ class BarElementTest(unittest.TestCase):
         self.assertEqual(elm.next(), "123")
         self.assertEqual(elm.next(), "234")
 
-#TODO next feature to implement
 class IconTest():#unittest.TestCase):
     def setUp(self):
-        self.nochk_Icon = copy.copy(Icon)
-        self.mock_check = Mock()
-        self.nochk_Icon._check_file = self.mock_check
+        self.ico_basedir = os.tmpnam()
+        #XXX check if files exist or not!
+        self.ico_name = "fkicon_dzentools_test.xbm"
+        self.ico_path = os.path.join(self.ico_basedir, self.ico_name)
+        open(self.ico_path).close()
     
+    def tearDown(self):
+        os.remove(self.ico_path)
+
     def test_get_code(self):
-        icon_elm = self.nochk_Icon(icon_path)
-        self.assertEqual(icon_elm, "^i(test/path)")
+        icons = Icon(ico_basedir)
+        icon = icons.get_icon(self.ico_name)
+        self.assertEqual(str(icon), "^i({0})".format(self.ico_path))
 
     def test_fail_nonexistent():
-        pass
+        icons = Icon(ico_basedir)
+        try:
+            icon = icons.get_icon("i_shall_not_exist.xbm")
+        except IOError:
+            pass
+        else:
+            self.fail("failed file check!")
+
+    def test_fail_nobasedir():
+        try:
+            icons = Icon("dir_shall_not_exists")
+        except IOError:
+            pass
+        else:
+            self.fail("failed directory check!")
         
 
 if __name__ == "__main__":
