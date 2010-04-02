@@ -1,0 +1,7 @@
+#ignore python compiled files
+*.pyc
+#ignore vim swap files
+.*.sw?
+#ignore ohter stuff
+provastatusbar.py
+dzenexample.sh
