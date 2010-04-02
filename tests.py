@@ -6,7 +6,7 @@ import copy
 import os, os.path
 from mock import Mock
 
-from dzentools import ForegroundColour, DzenString, BarElement
+from dzentools import ForegroundColour, DzenString, BarElement, Icon
 
 class ColourTest(unittest.TestCase):
     def test_color_apply(self):
@@ -120,24 +120,25 @@ class BarElementTest(unittest.TestCase):
         self.assertEqual(elm.next(), "123")
         self.assertEqual(elm.next(), "234")
 
-class IconTest():#unittest.TestCase):
+class IconTest(unittest.TestCase):
     def setUp(self):
         self.ico_basedir = os.tmpnam()
-        #XXX check if files exist or not!
+        os.mkdir(self.ico_basedir)
         self.ico_name = "fkicon_dzentools_test.xbm"
         self.ico_path = os.path.join(self.ico_basedir, self.ico_name)
-        open(self.ico_path).close()
+        open(self.ico_path, "w").close()
     
     def tearDown(self):
         os.remove(self.ico_path)
+        os.rmdir(self.ico_basedir)
 
     def test_get_code(self):
-        icons = Icon(ico_basedir)
+        icons = Icon(self.ico_basedir)
         icon = icons.get_icon(self.ico_name)
         self.assertEqual(str(icon), "^i({0})".format(self.ico_path))
 
-    def test_fail_nonexistent():
-        icons = Icon(ico_basedir)
+    def test_fail_nonexistent(self):
+        icons = Icon(self.ico_basedir)
         try:
             icon = icons.get_icon("i_shall_not_exist.xbm")
         except IOError:
@@ -145,7 +146,7 @@ class IconTest():#unittest.TestCase):
         else:
             self.fail("failed file check!")
 
-    def test_fail_nobasedir():
+    def test_fail_nobasedir(self):
         try:
             icons = Icon("dir_shall_not_exists")
         except IOError:

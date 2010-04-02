@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import os, os.path
+
 class DzenString(str):
     def __new__(cls, *args):
         str_elements = []
@@ -80,8 +82,18 @@ class BarElement(object):
             self.scroll_cursor += self.scroll
         return ret
 
-
-
     def __iter__(self):
         return self
 
+
+class Icon(object):
+    def __init__(self, base_dir):
+        self.base_dir = base_dir
+        if not os.access(base_dir, os.R_OK):
+            raise IOError("cannot access icon directory")
+
+    def get_icon(self, icon_name):
+        ipath = os.path.join(self.base_dir, icon_name)
+        if not os.access(ipath, os.R_OK):
+            raise IOError("cannot access icon")
+        return DzenString(('i', ipath))
