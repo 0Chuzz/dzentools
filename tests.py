@@ -4,6 +4,7 @@ import itertools
 import unittest
 import copy
 import os, os.path
+import warnings
 from mock import Mock
 
 from dzentools import ForegroundColour, DzenString, BarElement, Icon
@@ -122,7 +123,9 @@ class BarElementTest(unittest.TestCase):
 
 class IconTest(unittest.TestCase):
     def setUp(self):
-        self.ico_basedir = os.tmpnam()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)
+            self.ico_basedir = os.tmpnam()
         os.mkdir(self.ico_basedir)
         self.ico_name = "fkicon_dzentools_test.xbm"
         self.ico_path = os.path.join(self.ico_basedir, self.ico_name)
