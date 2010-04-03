@@ -77,8 +77,18 @@ class Audio(BarElement):
         return ORANGE("Vol: [{0}%] [{1}]".format(vol,state))
 
 
+class Memory(BarElement):
+    def update(self):
+        with open("/proc/meminfo") as f:
+            meminfo = yaml.load(f.read())
+        mem_total = float(meminfo["MemTotal"][:-2])
+        mem_free = float(meminfo["MemFree"][:-2])
+        return BLUE("Mem: {0:0.2%}".format((mem_total-mem_free)/mem_total))
+
+
 if __name__ == "__main__":
-    lines = itertools.izip( Time(), Load(), Battery(), MprisPlayer(), Audio())
+    lines = itertools.izip(Time(), Load(), Battery(), 
+        MprisPlayer(), Audio(), Memory())
     for line in lines:
         print(line)
         time.sleep(1)

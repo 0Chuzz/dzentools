@@ -8,7 +8,8 @@ import locale
 from basicelements import *
 
 DEFAULTARGS = "-ta r -y 782 -w 1080 -x 200 -bg black"
-ELEMENTS = (MprisPlayer(size=40, scroll=1), Audio(), Battery(), Load(), Time())
+ELEMENTS = (MprisPlayer(size=40, scroll=1), Audio(), Memory(),
+        Battery(), Load(), Time())
 
 def main():
     locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
