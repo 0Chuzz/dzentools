@@ -121,6 +121,7 @@ class BarElementTest(unittest.TestCase):
         self.assertEqual(elm.next(), "123")
         self.assertEqual(elm.next(), "234")
 
+
 class IconTest(unittest.TestCase):
     def setUp(self):
         with warnings.catch_warnings():
@@ -157,6 +158,41 @@ class IconTest(unittest.TestCase):
         else:
             self.fail("failed directory check!")
         
+
+class GradientTest():#unittest.TestCase):
+    def test_gradient_creation(self):
+        grad_func = lambda: 0.5
+        grad_test = Gradient(((0, 7, 15), (15, 7, 0)), grad_func)
+        result = grad_test("^_^")
+        self.assertEqual(str(result), "^fg(#777777)^^_^^^fg()")
+
+    def test_out_of_bound_val(self):
+        grad_func = lambda: 3.14
+        grad_test = Gradient(((0, 7, 15), (15, 7, 0)), grad_func)
+        result = grad_test("^_^")
+        self.assertEqual(str(result), "^fg(#FF7700)^^_^^^fg()")
+        grad_func = lambda: -1.0
+        grad_test = Gradient(((0, 7, 15), (15, 7, 0)), grad_func)
+        result = grad_test("^_^")
+        self.assertEqual(str(result), "^fg(#0077FF)^^_^^^fg()")
+
+    def test_dynamic_gradient(self):
+        #XXX check when color value is updated!!! (on init, _call, str?)
+        def grad_func(static=[0, 5, 10]):
+                return float(static.pop(0))/10
+        grad_test = Gradient(((0, 7, 15), (15, 7, 0)), grad_func)
+        self.assertEqual(str(grad_test("a")), "^fg(#0077FF)^^_^^^fg()")
+        self.assertEqual(str(grad_test("a")), "^fg(#777777)^^_^^^fg()")
+        self.assertEqual(str(grad_test("a")), "^fg(#FF7700)^^_^^^fg()") 
+
+    def test_invalid_values(self):
+        try:
+            Gradient("chiquita", "banana")
+        except TypeError:
+            pass
+        else:
+            self.fail("accepting invalid arguments for gradient!")
+
 
 if __name__ == "__main__":
     unittest.main()
