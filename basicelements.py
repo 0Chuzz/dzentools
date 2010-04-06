@@ -76,6 +76,11 @@ class Audio(BarElement):
         vol = master.getvolume()[0]
         return ORANGE("Vol: [{0}%] [{1}]".format(vol,state))
 
+class MocpPlayer(BarElement):
+    def update(self):
+        data = filter(lambda x: x.startswith("Tit"), os.popen("mocp -i"))
+        return data[0][7:-1]
+
 
 class Memory(BarElement):
     def update(self):
@@ -88,7 +93,7 @@ class Memory(BarElement):
 
 if __name__ == "__main__":
     lines = itertools.izip(Time(), Load(), Battery(), 
-        MprisPlayer(), Audio(), Memory())
+        MprisPlayer(), MocpPlayer(), Audio(), Memory())
     for line in lines:
         print(line)
         time.sleep(1)
