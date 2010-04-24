@@ -89,8 +89,8 @@ class Memory(BarElement):
         with open("/proc/meminfo") as f:
             meminfo = yaml.load(f.read())
         mem_total = float(meminfo["MemTotal"][:-2])
-        mem_free = float(meminfo["MemFree"][:-2])
-        return BLUE("Mem: {0:0.2%}".format((mem_total-mem_free)/mem_total))
+        mem_needed = float(meminfo["Committed_AS"][:-2])
+        return BLUE("Mem: {0:0.2%}".format((mem_needed)/mem_total))
 
 
 if __name__ == "__main__":
