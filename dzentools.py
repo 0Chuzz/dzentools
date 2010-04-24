@@ -1,9 +1,23 @@
 #!/usr/bin/python
+'''dzentools module
+contains the core utilities to output information with dzen syntax. this
+module does not mess with the OS as it cares only about syntax so it doesn't
+need any external library. 
+'''
 
 import os, os.path
 
 class DzenString(str):
+    '''Dzen syntax aware string
+
+    this subclass of string keep tracks of syntax elements and plain text, in
+    order to avoid problems when nesting/blending many text chunks.
+    '''
     def __new__(cls, *args):
+        '''DzenString "costructor"
+        accept one or more plaintext string, or 2-tuples representing a dzen
+        entity. string creation is done here, as string are unmutable
+        '''
         str_elements = []
         for elm in args:
             if isinstance(elm, tuple):
