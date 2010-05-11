@@ -78,10 +78,9 @@ class Audio(BarElement):
 
 class MocpPlayer(BarElement):
     def update(self):
-        data = filter(lambda x: x.startswith("Tit"), os.popen("mocp -i"))
-        if data:
-            data = data[0]
-        return data[7:-1] or "Not Playing"
+        data = dict(line.split(":", 1) for line in os.popen("mocp -i"))
+        ret = data.get("Title").strip() or data.get("File").strip()
+        return ret or "Not Playing"
 
 
 class Memory(BarElement):
