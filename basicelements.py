@@ -11,8 +11,8 @@ from dbus.exceptions import DBusException
 from dzentools import BarElement, ForegroundColour, Icon
 
 BLUE = ForegroundColour("blue")
-GREEN = ForegroundColour("green")
-ORANGE = ForegroundColour("orange")
+RED = ForegroundColour("red")
+LBLUE = ForegroundColour("lightblue")
 ICONS = Icon(os.path.dirname(__file__) + "/icons")
 
 class Time(BarElement):
@@ -33,13 +33,24 @@ class Battery(BarElement):
         self.total_capacity = int(info["design capacity"].split()[0])
         self.max_capacity = int(info["last full capacity"].split()[0])
         self.warning = int(info["design capacity warning"].split()[0])
-        self.low = int(info["design capacity low"].split()[0])
-        self.bat_status = state["charging state"].strip()
         self.capacity = int(state["remaining capacity"].split()[0])
+        #self.low = int(info["design capacity low"].split()[0])
+
+        self.bat_status = state["charging state"].strip()
+        if self.bat_status == "discharging":
+            my_icon = "power-bat.xbm"
+        else:
+            my_icon = "power-ac.xbm"
+
+        if self.capacity <= self.warning:
+            my_col = RED
+        else:
+            my_col = LBLUE
+
         self.quantity = float(self.capacity)/self.max_capacity
         self.quality = float(self.max_capacity)/self.total_capacity
         ret = " {quantity:.0%}"
-        return ICONS["power-bat.xbm"] + ret.format(**self.__dict__)
+        return my_col(ICONS[my_icon] + ret.format(**self.__dict__))
 
 
 class MprisPlayer(BarElement):
@@ -75,7 +86,7 @@ class Audio(BarElement):
         master = alsaaudio.Mixer()
         state = "vol-mute.xbm" if master.getmute()[0] else "vol-hi.xbm"
         vol = master.getvolume()[0]
-        return ICONS[state] + " [{0}%]".format(vol)
+        return LBLUE(ICONS[state] + " [{0}%]".format(vol))
 
 class MocpPlayer(BarElement):
     def update(self):
@@ -90,7 +101,7 @@ class Memory(BarElement):
             meminfo = yaml.load(f.read())
         mem_total = float(meminfo["MemTotal"][:-2])
         mem_needed = float(meminfo["Committed_AS"][:-2])
-        return BLUE("Mem: {0:0.2%}".format((mem_needed)/mem_total))
+        return BLUE(ICONS["mem.xbm"] + " {0:0.2%}".format((mem_needed)/mem_total))
 
 
 if __name__ == "__main__":
