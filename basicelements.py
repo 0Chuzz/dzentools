@@ -20,7 +20,8 @@ class Time(BarElement):
 
 
 class Load(BarElement):
-    update = lambda self: BLUE("{0:.2f} {1:.2f} {2:.2f}".format(*os.getloadavg()))
+    def update(self):
+        return BLUE(ICONS["load.xbm"] + " {0:.2f} {1:.2f} {2:.2f}".format(*os.getloadavg()))
 
 
 class Battery(BarElement):
