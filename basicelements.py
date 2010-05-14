@@ -8,11 +8,12 @@ import dbus
 import select
 import alsaaudio
 from dbus.exceptions import DBusException
-from dzentools import BarElement, ForegroundColour
+from dzentools import BarElement, ForegroundColour, Icon
 
 BLUE = ForegroundColour("blue")
 GREEN = ForegroundColour("green")
 ORANGE = ForegroundColour("orange")
+ICONS = Icon(os.path.dirname(__file__) + "/icons")
 
 class Time(BarElement):
     update = lambda self: time.strftime("%A %d %b %H:%M:%S")
@@ -37,8 +38,8 @@ class Battery(BarElement):
         self.capacity = int(state["remaining capacity"].split()[0])
         self.quantity = float(self.capacity)/self.max_capacity
         self.quality = float(self.max_capacity)/self.total_capacity
-        ret = "{bat_status} {quantity:.0%}"
-        return GREEN(ret.format(**self.__dict__))
+        ret = " {quantity:.0%}"
+        return ICONS["power-bat.xbm"] + ret.format(**self.__dict__)
 
 
 class MprisPlayer(BarElement):
@@ -72,9 +73,9 @@ class Audio(BarElement):
     
     def update(self):
         master = alsaaudio.Mixer()
-        state = "off" if master.getmute()[0] else "on"
+        state = "vol-mute.xbm" if master.getmute()[0] else "vol-hi.xbm"
         vol = master.getvolume()[0]
-        return ORANGE("Vol: [{0}%] [{1}]".format(vol,state))
+        return ICONS[state] + " [{0}%]".format(vol)
 
 class MocpPlayer(BarElement):
     def update(self):
@@ -94,7 +95,8 @@ class Memory(BarElement):
 
 if __name__ == "__main__":
     lines = itertools.izip(Time(), Load(), Battery(), 
-        MprisPlayer(), MocpPlayer(), Audio(), Memory())
+        MprisPlayer(), MocpPlayer(), Audio(), Memory(),
+        )
     for line in lines:
         print(line)
         time.sleep(1)

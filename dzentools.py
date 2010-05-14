@@ -110,12 +110,15 @@ class BarElement(object):
 
 class Icon(object):
     def __init__(self, base_dir):
-        self.base_dir = base_dir
+        self.base_dir = os.path.abspath(base_dir)
         if not os.access(base_dir, os.R_OK):
-            raise IOError("cannot access icon directory")
+            raise IOError("cannot access '{0.base_dir}' directory".format(self))
 
     def get_icon(self, icon_name):
         ipath = os.path.join(self.base_dir, icon_name)
         if not os.access(ipath, os.R_OK):
             raise IOError("cannot access icon")
         return DzenString(('i', ipath))
+
+    def __getitem__(self, name):
+        return self.get_icon(name)
