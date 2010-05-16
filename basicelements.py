@@ -91,7 +91,8 @@ class Audio(BarElement):
 
 class MocpPlayer(BarElement):
     def update(self):
-        data = dict(line.split(":", 1) for line in os.popen("mocp -i"))
+        data = os.popen("mocp -i")
+        data = dict(line.split(":", 1) for line in data if ":" in line)
         ret = data.get("Title", "").strip() or data.get("File", "").strip()
         return ret or "Not Playing"
 
