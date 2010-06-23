@@ -27,8 +27,12 @@ class Load(BarElement):
 class Battery(BarElement):
     def update(self):
         battdir = "/proc/acpi/battery/BAT0"
+        info = {}
         with open(battdir + "/info") as f:
-            info = yaml.load(f)
+            for line in f:
+                if ':' not in line: continue
+                name, value = line.split(':')
+                info[name.strip()] = value.strip()
         with open(battdir +  "/state") as f:
             state = yaml.load(f)
         self.total_capacity = int(info["design capacity"].split()[0])
