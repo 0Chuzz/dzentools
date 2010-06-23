@@ -3,7 +3,7 @@
 import time
 import os
 import itertools
-import yaml
+from operator import methodcaller
 import dbus
 import select
 import alsaaudio
@@ -14,6 +14,10 @@ BLUE = ForegroundColour("blue")
 RED = ForegroundColour("red")
 LBLUE = ForegroundColour("lightblue")
 ICONS = Icon(os.path.dirname(__file__) + "/icons")
+
+def procfile_parse(stream):
+    ret = (line.split(':', 1) for line in stream if ':' in line)
+    return dict((k.strip(), v.strip()) for k,v in ret)
 
 class Time(BarElement):
     update = lambda self: time.strftime("%A %d %b %H:%M:%S")
@@ -29,12 +33,9 @@ class Battery(BarElement):
         battdir = "/proc/acpi/battery/BAT0"
         info = {}
         with open(battdir + "/info") as f:
-            for line in f:
-                if ':' not in line: continue
-                name, value = line.split(':')
-                info[name.strip()] = value.strip()
+            info = procfile_parse(f)
         with open(battdir +  "/state") as f:
-            state = yaml.load(f)
+            state = procfile_parse(f)
         self.total_capacity = int(info["design capacity"].split()[0])
         self.max_capacity = int(info["last full capacity"].split()[0])
         self.warning = int(info["design capacity warning"].split()[0])
@@ -104,7 +105,7 @@ class MocpPlayer(BarElement):
 class Memory(BarElement):
     def update(self):
         with open("/proc/meminfo") as f:
-            meminfo = yaml.load(f.read())
+            meminfo = procfile_parse(f)
         mem_total = float(meminfo["MemTotal"][:-2])
         mem_needed = float(meminfo["Committed_AS"][:-2])
         return BLUE(ICONS["mem.xbm"] + " {0:0.2%}".format((mem_needed)/mem_total))
