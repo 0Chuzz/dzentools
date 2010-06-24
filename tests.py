@@ -121,6 +121,12 @@ class BarElementTest(unittest.TestCase):
         self.assertEqual(elm.next(), "123")
         self.assertEqual(elm.next(), "234")
 
+    def test_params(self):
+        elm = BarElement()
+        self.assertEqual(elm.params, {})
+        elm = BarElement(params="lol")
+        self.assertEqual(elm.params, "lol")
+
 
 class IconTest(unittest.TestCase):
     def setUp(self):
