@@ -64,11 +64,15 @@ class ForegroundColour(object):
 
 
 class BarElement(object):
-    def __init__(self, size=None, scroll=0):
+    def __init__(self, size=None, scroll=0, params=None):
         self.size = size
         self.scroll = scroll
         self.scroll_cursor = 0
         self.last = None
+        if not params:
+            self.params = {}
+        else:
+            self.params = params
         self.start()
 
     def start(self):
