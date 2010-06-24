@@ -111,9 +111,19 @@ class Memory(BarElement):
         return BLUE(ICONS["mem.xbm"] + " {0:0.2%}".format((mem_needed)/mem_total))
 
 
+class DiskUsage(BarElement):
+    MPTS = [ "/", "/mnt/vista" ] # XXX
+    def update(self):
+        data = os.popen("df -Ph")
+        ret = dict(line.split()[:-3:-1] for line in data if "/" in line)
+        ret = " ".join("{0}:{1}".format(k,v) for k, v in ret.iteritems() if k in self.MPTS)
+        return BLUE(ret)
+
+
 if __name__ == "__main__":
     lines = itertools.izip(Time(), Load(), Battery(), 
         MprisPlayer(), MocpPlayer(), Audio(), Memory(),
+        DiskUsage(),
         )
     for line in lines:
         print(line)
