@@ -124,8 +124,19 @@ class BarElementTest(unittest.TestCase):
     def test_params(self):
         elm = BarElement()
         self.assertEqual(elm.params, {})
-        elm = BarElement(params="lol")
-        self.assertEqual(elm.params, "lol")
+        elm = BarElement(params=dict(lol=0))
+        self.assertTrue("lol" in elm.params)
+
+    def test_default_params(self):
+        class Tdf(BarElement):
+            DEFAULT_PARAMS = dict(defa="lol")
+        
+        self.assertTrue("defa" not in BarElement().params)
+        self.assertTrue("defa" in Tdf().params)
+
+        elm = Tdf(params=dict(nodefa="lul"))
+        self.assertTrue("nodefa" not in Tdf().params)
+        self.assertTrue("nodefa" in elm.params)
 
 
 class IconTest(unittest.TestCase):
