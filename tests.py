@@ -127,6 +127,10 @@ class BarElementTest(unittest.TestCase):
         elm = BarElement(params=dict(lol=0))
         self.assertTrue("lol" in elm.params)
 
+    def test_easy_params(self):
+        elm = BarElement(dict(lol=0))
+        self.assertTrue("lol" in elm.params)
+
     def test_default_params(self):
         class Tdf(BarElement):
             DEFAULT_PARAMS = dict(defa="lol")
