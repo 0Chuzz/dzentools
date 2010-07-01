@@ -40,6 +40,7 @@ class Battery(BarElement):
         'colour': LBLUE, 
         'colour_warning': RED,
         }
+
     def update(self):
         battdir = self.params['battdir']
         info = {}
@@ -71,8 +72,10 @@ class Battery(BarElement):
 
 
 class MprisPlayer(BarElement):
+    DEFAULT_PARAMS = dict(app="org.mpris.vlc")
+
     def start(self):
-        self.application = "org.mpris.vlc"
+        self.application = self.params['app']
         self.bus = dbus.SessionBus()
 
     def update(self):
@@ -95,6 +98,7 @@ class Audio(BarElement):
     DEFAULT_PARAMS = {
             'icon': 'vol-hi.xbm',
             'icon_mute': 'vol-mute.xbm',
+            'colour': LBLUE,
             }
     def start(self):
         self._poll = select.poll()
@@ -105,9 +109,10 @@ class Audio(BarElement):
     
     def update(self):
         master = alsaaudio.Mixer()
-        state = "vol-mute.xbm" if master.getmute()[0] else "vol-hi.xbm"
+        state = self.params['icon_mute' if master.getmute()[0] else 'icon']
         vol = master.getvolume()[0]
-        return LBLUE(ICONS[state] + " [{0}%]".format(vol))
+        return self.params['colour'](ICONS[state] + " [{0}%]".format(vol))
+
 
 class MocpPlayer(BarElement):
     def update(self):
@@ -118,21 +123,32 @@ class MocpPlayer(BarElement):
 
 
 class Memory(BarElement):
+    DEFAULT_PARAMS = {
+            'icon': "mem.xbm",
+            'colour': BLUE,
+            }
     def update(self):
         with open("/proc/meminfo") as f:
             meminfo = procfile_parse(f)
         mem_total = float(meminfo["MemTotal"][:-2])
         mem_needed = float(meminfo["Committed_AS"][:-2])
-        return BLUE(ICONS["mem.xbm"] + " {0:0.2%}".format((mem_needed)/mem_total))
+        ret = ICONS[self.params['icon']] 
+        ret += " {0:0.2%}".format((mem_needed)/mem_total)
+        return self.params['colour'](ret)
 
 
 class DiskUsage(BarElement):
-    MPTS = [ "/", "/mnt/vista" ] # XXX
+    DEFAULT_PARAMS = {
+        'partitions': [ "/", "/mnt/vista" ],
+        'colour': BLUE,
+        }
+
     def update(self):
+        MPTS = self.params['partitions']
         data = os.popen("df -Ph")
         ret = dict(line.split()[:-3:-1] for line in data if "/" in line)
-        ret = " ".join("{0}:{1}".format(k,v) for k, v in ret.iteritems() if k in self.MPTS)
-        return BLUE(ret)
+        ret = " ".join("{0}:{1}".format(k,v) for k, v in ret.iteritems() if k in MPTS)
+        return self.params['colour'](ret)
 
 
 if __name__ == "__main__":
