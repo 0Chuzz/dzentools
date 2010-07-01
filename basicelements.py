@@ -20,17 +20,28 @@ def procfile_parse(stream):
     return dict((k.strip(), v.strip()) for k,v in ret)
 
 class Time(BarElement):
-    update = lambda self: time.strftime("%A %d %b %H:%M:%S")
+    DEFAULT_PARAMS = dict(fmt="%A %d %b %H:%M:%S")
+    update = lambda self: time.strftime(self.params['fmt'])
 
 
 class Load(BarElement):
+    DEFAULT_PARAMS = dict(colour=BLUE, icon="load.xbm")
     def update(self):
-        return BLUE(ICONS["load.xbm"] + " {0:.2f} {1:.2f} {2:.2f}".format(*os.getloadavg()))
+        ret = ICONS[self.params['icon']]
+        ret += " {0:.2f} {1:.2f} {2:.2f}".format(*os.getloadavg())
+        return self.params['colour'](ret)
 
 
 class Battery(BarElement):
+    DEFAULT_PARAMS = {
+        'battdir': "/proc/acpi/battery/BAT0", 
+        'icon_bat': "power-bat.xbm",
+        'icon_ac': "power-ac.xbm",
+        'colour': LBLUE, 
+        'colour_warning': RED,
+        }
     def update(self):
-        battdir = "/proc/acpi/battery/BAT0"
+        battdir = self.params['battdir']
         info = {}
         with open(battdir + "/info") as f:
             info = procfile_parse(f)
@@ -44,14 +55,14 @@ class Battery(BarElement):
 
         self.bat_status = state["charging state"].strip()
         if self.bat_status == "discharging":
-            my_icon = "power-bat.xbm"
+            my_icon = self.params['icon_bat'] 
         else:
-            my_icon = "power-ac.xbm"
+            my_icon = self.params['icon_ac']
 
         if self.capacity <= self.warning:
-            my_col = RED
+            my_col = self.params['colour_warning']
         else:
-            my_col = LBLUE
+            my_col = self.params['colour']
 
         self.quantity = float(self.capacity)/self.max_capacity
         self.quality = float(self.max_capacity)/self.total_capacity
@@ -81,6 +92,10 @@ class MprisPlayer(BarElement):
 
 
 class Audio(BarElement):
+    DEFAULT_PARAMS = {
+            'icon': 'vol-hi.xbm',
+            'icon_mute': 'vol-mute.xbm',
+            }
     def start(self):
         self._poll = select.poll()
         self._poll.register(*alsaaudio.Mixer().polldescriptors()[0])
