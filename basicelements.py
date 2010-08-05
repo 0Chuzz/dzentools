@@ -3,11 +3,11 @@
 import time
 import os
 import itertools
-from operator import methodcaller
 import dbus
 import select
 import alsaaudio
 from dbus.exceptions import DBusException
+from mpdclient2 import connect
 from dzentools import BarElement, ForegroundColour, Icon
 
 BLUE = ForegroundColour("blue")
@@ -121,6 +121,18 @@ class MocpPlayer(BarElement):
         ret = data.get("Title", "").strip() or data.get("File", "").strip()
         return ret or "Not Playing"
 
+
+class MpdPlayer(BarElement):
+    def start(self):
+        self.conn = connect()
+
+    def update(self):
+        _song = self.conn.currentsong()
+        song = lambda x: _song.get(x, '')
+        song_name = song('artist')
+        if song_name: song_name += ' - '
+        song_name += song('title') or song('file')
+        return song_name or "Not Playing"
 
 class Memory(BarElement):
     DEFAULT_PARAMS = {
