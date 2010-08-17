@@ -1,9 +1,7 @@
 #!/usr/bin/python
 
-import itertools
 import unittest
-import copy
-import os, os.path
+import os.path
 import warnings
 from mock import Mock
 

@@ -8,7 +8,7 @@ import select
 import alsaaudio
 from dbus.exceptions import DBusException
 from mpdclient2 import connect
-from dzentools import BarElement, ForegroundColour, Icon
+from dzentools import BarElement, ForegroundColour, Icon, DzenString
 
 BLUE = ForegroundColour("blue")
 RED = ForegroundColour("red")
@@ -162,6 +162,25 @@ class DiskUsage(BarElement):
         ret = " ".join("{0}:{1}".format(k,v) for k, v in ret.iteritems() if k in MPTS)
         return self.params['colour'](ret)
 
+class IMAPRecent(BarElement):
+    DEFAULT_PARAMS = {
+            'cmd' : "xclock",
+            'acct-file': None,
+            'wait' : 10*60,
+            }
+    def start(self):
+        self._lasttime = time.time()
+
+    def check_update(self):
+        now = time.time()
+        if now - self._lasttime > self.params['wait']:
+            self._lasttime = now
+            return True
+        else:
+            return False
+
+    def update(self):
+        return DzenString(("ca", self.params['cmd']), ("ca", ""))
 
 if __name__ == "__main__":
     lines = itertools.izip(Time(), Load(), Battery(), 

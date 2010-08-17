@@ -5,7 +5,7 @@ module does not mess with the OS as it cares only about syntax so it doesn't
 need any external library. 
 '''
 
-import os, os.path
+import os.path
 
 class DzenString(str):
     '''Dzen syntax aware string

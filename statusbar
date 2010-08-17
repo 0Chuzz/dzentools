@@ -7,7 +7,7 @@ import itertools
 import locale
 from basicelements import *
 
-DEFAULTARGS = "-ta r -y 782 -w 1080 -x 200 -bg black"
+DEFAULTARGS = "-ta r -y 782 -w 1080 -x 200 -bg black -fn lucida:weight=bold:pixelsize=12"
 ELEMENTS = (MpdPlayer(size=40, scroll=1), DiskUsage(), Audio(), Memory(),
         Battery(), Load(), Time())
 
