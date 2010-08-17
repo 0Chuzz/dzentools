@@ -111,7 +111,7 @@ class Audio(BarElement):
         master = alsaaudio.Mixer()
         state = self.params['icon_mute' if master.getmute()[0] else 'icon']
         vol = master.getvolume()[0]
-        return self.params['colour'](ICONS[state] + " [{0}%]".format(vol))
+        return self.params['colour'](ICONS[state] + " {0}%".format(vol))
 
 
 class MocpPlayer(BarElement):
@@ -134,6 +134,7 @@ class MpdPlayer(BarElement):
         song_name += song('title') or song('file')
         return song_name or "Not Playing"
 
+
 class Memory(BarElement):
     DEFAULT_PARAMS = {
             'icon': "mem.xbm",
@@ -151,7 +152,11 @@ class Memory(BarElement):
 
 class DiskUsage(BarElement):
     DEFAULT_PARAMS = {
-        'partitions': [ "/", "/mnt/vista" ],
+        'partitions': ( 
+            ("/", "/"), 
+            ("vista", "/mnt/vista"), 
+            ("usb", "/media/usbstick")
+            ),
         'colour': BLUE,
         }
 
@@ -159,8 +164,9 @@ class DiskUsage(BarElement):
         MPTS = self.params['partitions']
         data = os.popen("df -Ph")
         ret = dict(line.split()[:-3:-1] for line in data if "/" in line)
-        ret = " ".join("{0}:{1}".format(k,v) for k, v in ret.iteritems() if k in MPTS)
+        ret = " ".join("{0}: {1}".format(k, ret.get(v, 'UNM')) for k, v in MPTS)
         return self.params['colour'](ret)
+
 
 class IMAPRecent(BarElement):
     DEFAULT_PARAMS = {
