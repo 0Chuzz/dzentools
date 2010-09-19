@@ -71,7 +71,10 @@ class Notification(BarElement):
     def update(self):
         while not self.queue.empty():
             new = self.queue.get_nowait()
-            self.shown_notif.append(new)
+            if new == "CLEARNOTIFICATIONS":
+                self.shown_notif = []
+            else:
+                self.shown_notif.append(new)
             self.queue.task_done()
         if self.shown_notif:
             show = self.shown_notif.pop(0)

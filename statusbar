@@ -9,7 +9,8 @@ from basicelements import *
 from notification import Notification
 
 DEFAULTARGS = ("-ta r -y 782 -w 1100 -x 180 -bg black -fn "
-                "lucida:weight=bold:pixelsize=12")
+                "lucida:weight=bold:pixelsize=12 "
+                "-e 'button1=exec:notify-send CLEARNOTIFICATIONS'")
 ELEMENTS = (Notification(size=25), MpdPlayer(size=40, scroll=1),
         DiskUsage(), Audio(), Memory(), Battery(), Load(), Time())
 
