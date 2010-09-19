@@ -6,10 +6,12 @@ import sys
 import itertools
 import locale
 from basicelements import *
+from notification import Notification
 
-DEFAULTARGS = "-ta r -y 782 -w 1080 -x 200 -bg black -fn lucida:weight=bold:pixelsize=12"
-ELEMENTS = (MpdPlayer(size=40, scroll=1), DiskUsage(), Audio(), Memory(),
-        Battery(), Load(), Time())
+DEFAULTARGS = ("-ta r -y 782 -w 1100 -x 180 -bg black -fn "
+                "lucida:weight=bold:pixelsize=12")
+ELEMENTS = (Notification(size=25), MpdPlayer(size=40, scroll=1),
+        DiskUsage(), Audio(), Memory(), Battery(), Load(), Time())
 
 def main():
     locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())

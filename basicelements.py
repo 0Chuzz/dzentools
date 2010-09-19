@@ -29,7 +29,7 @@ class Load(BarElement):
     def update(self):
         ret = ICONS[self.params['icon']]
         ret += " {0:.2f} {1:.2f} {2:.2f}".format(*os.getloadavg())
-        return self.params['colour'](ret)
+        return ret
 
 
 class Battery(BarElement):
@@ -37,7 +37,7 @@ class Battery(BarElement):
         'battdir': "/proc/acpi/battery/BAT0", 
         'icon_bat': "power-bat.xbm",
         'icon_ac': "power-ac.xbm",
-        'colour': LBLUE, 
+        'colour_normal': LBLUE, 
         'colour_warning': RED,
         }
 
@@ -63,7 +63,7 @@ class Battery(BarElement):
         if self.capacity <= self.warning:
             my_col = self.params['colour_warning']
         else:
-            my_col = self.params['colour']
+            my_col = self.params['colour_normal']
 
         self.quantity = float(self.capacity)/self.max_capacity
         self.quality = float(self.max_capacity)/self.total_capacity
@@ -111,7 +111,7 @@ class Audio(BarElement):
         master = alsaaudio.Mixer()
         state = self.params['icon_mute' if master.getmute()[0] else 'icon']
         vol = master.getvolume()[0]
-        return self.params['colour'](ICONS[state] + " {0}%".format(vol))
+        return (ICONS[state] + " {0}%".format(vol))
 
 
 class MocpPlayer(BarElement):
@@ -147,7 +147,7 @@ class Memory(BarElement):
         mem_needed = float(meminfo["Committed_AS"][:-2])
         ret = ICONS[self.params['icon']] 
         ret += " {0:0.2%}".format((mem_needed)/mem_total)
-        return self.params['colour'](ret)
+        return (ret)
 
 
 class DiskUsage(BarElement):
@@ -165,7 +165,7 @@ class DiskUsage(BarElement):
         data = os.popen("df -Ph")
         ret = dict(line.split()[:-3:-1] for line in data if "/" in line)
         ret = " ".join("{0}: {1}".format(k, ret.get(v, 'UNM')) for k, v in MPTS)
-        return self.params['colour'](ret)
+        return (ret)
 
 
 class IMAPRecent(BarElement):

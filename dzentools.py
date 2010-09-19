@@ -106,6 +106,9 @@ class BarElement(object):
             ret = ret[self.scroll_cursor:] + ret[:self.scroll_cursor]
             self.scroll_cursor += self.scroll
         ret = ret[:self.size]
+        col = self.params.get('colour')
+        if col:
+            ret = "^fg(" + col.colour +")" + ret +"^fg()" #XXX 
         return ret
 
     def __iter__(self):
