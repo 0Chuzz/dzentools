@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#vim:fileencoding=utf-8
 
 import unittest
 import os.path
@@ -139,6 +140,14 @@ class BarElementTest(unittest.TestCase):
         elm = Tdf(params=dict(nodefa="lul"))
         self.assertTrue("nodefa" not in Tdf().params)
         self.assertTrue("nodefa" in elm.params)
+
+    def test_unicode_output(self):
+        elm = BarElement()
+        elm.update = lambda: u'garçon'
+        try:
+            self.assertEqual(elm.next(), u'garçon'.encode('utf-8'))
+        except UnicodeError:
+            self.fail('error in unicode handling')
 
 
 class IconTest(unittest.TestCase):
