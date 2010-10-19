@@ -109,9 +109,7 @@ class BarElement(object):
         col = self.params.get('colour')
         if col:
             ret = "^fg(" + col.colour +")" + ret +"^fg()" #XXX 
-        try:
-            ret = ret.encode('ascii')
-        except UnicodeError:
+        if type(ret) == unicode:
             ret = ret.encode('utf-8', 'replace')
         return ret
 
