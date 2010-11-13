@@ -7,8 +7,6 @@ import itertools
 import locale
 from basicelements import *
 from notification import Notification
-class Nootification(object):
-    def __init__(self, **a):pass
 
 DEFAULTARGS = ("-ta r -y 782 -w 1100 -x 180 -bg black -fn "
                 "lucida:weight=bold:pixelsize=12 "
