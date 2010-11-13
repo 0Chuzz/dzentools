@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 '''notifications from dzen bar module
 notification-daemon derived from 
 http://github.com/halhen/statnot

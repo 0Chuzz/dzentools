@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 
 import os
 import time
@@ -7,10 +7,12 @@ import itertools
 import locale
 from basicelements import *
 from notification import Notification
+class Nootification(object):
+    def __init__(self, **a):pass
 
 DEFAULTARGS = ("-ta r -y 782 -w 1100 -x 180 -bg black -fn "
                 "lucida:weight=bold:pixelsize=12 "
-                "-e 'button1=exec:notify-send CLEARNOTIFICATIONS'")
+                "-e $'button1=exec:notify-send CLEARNOTIFICATIONS'")
 ELEMENTS = (Notification(size=25), MpdPlayer(size=40, scroll=1),
         DiskUsage(), Audio(), Memory(), Battery(), Load(), Time())
 
